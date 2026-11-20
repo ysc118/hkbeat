@@ -4,7 +4,7 @@
   "dailyThrough": "2026-11-17",
   "monthlyThrough": "2026-10",
   "lastSuccess": null,
-  "lastAttempt": null,
+  "lastAttempt": "2026-11-20T08:48:20.477Z",
   "importedAt": "2026-11-20T08:03:15.799Z",
-  "message": "当前为迁移归档数据，月狐后台密钥配置完成后启用自动同步。"
+  "message": "月狐自动更新密钥尚未配齐，当前显示迁移时的归档数据。"
 }
