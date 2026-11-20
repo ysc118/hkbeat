@@ -43,9 +43,12 @@
     }
     return new Response('',{status:404});
   };
-  function gate(message){
+  function gate(message,needsLink=true){
     document.getElementById('station-gate').hidden=false;
     document.getElementById('station-shell').hidden=true;
+    document.getElementById('station-gate').setAttribute('aria-busy',String(!needsLink));
+    document.getElementById('gate-form').hidden=!needsLink;
+    document.getElementById('gate-help').hidden=!needsLink;
     document.getElementById('gate-message').textContent=message;
   }
   function showStatus(status){
@@ -61,17 +64,21 @@
     if(started)return;
     team=candidate;
     try{
-      gate('正在读取团队资料…');
+      gate('正在加载资料，请稍候…',false);
       manifest=await (await asset('data/manifest.json')).json();
-      const bytes=new Uint8Array(await (await asset('data/catalog.enc',manifest.hashes['catalog.enc'])).arrayBuffer());
+      const [catalogBuffer,appBuffer,status]=await Promise.all([
+        asset('data/catalog.enc',manifest.hashes['catalog.enc']).then(response=>response.arrayBuffer()),
+        asset('data/app.enc',manifest.hashes['app.enc']).then(response=>response.arrayBuffer()),
+        asset('data/status.json',manifest.hashes['status.json']).then(response=>response.json())
+      ]);
+      const bytes=new Uint8Array(catalogBuffer);
       const compressed=await decrypt(bytes,'hkbeat-catalog-v1/');
       const plain=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
       snapshot=JSON.parse(plain);
       // Verify the App key before revealing the rest of the dashboard.
-      const appBytes=new Uint8Array(await (await asset('data/app.enc',manifest.hashes['app.enc'])).arrayBuffer());
+      const appBytes=new Uint8Array(appBuffer);
       JSON.parse(decoder.decode(await decrypt(appBytes,'moonfox-team-v1/')));
       try{sessionStorage.setItem('moonfox.team',team);}catch{}
-      const status=await (await asset('data/status.json',manifest.hashes['status.json'])).json();
       showStatus(status);
       document.getElementById('station-gate').hidden=true;
       document.getElementById('station-shell').hidden=false;
