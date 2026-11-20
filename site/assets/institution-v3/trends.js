@@ -50,13 +50,12 @@
 
   function marketTrendHTML(model) {
     if (!model?.dates?.length || !model.series?.length) return '';
-    return '<section class="market-trend'+(model.detail?' mt-detail-chart':'')+'" aria-label="'+(model.detail?'所选曲线放大图':'指标趋势')+'">'+
-      '<div class="mt-header"><div><h3>'+(model.detail?'所选曲线':'指标趋势')+'</h3><p class="mt-span"></p></div><div class="mt-ranges" role="group" aria-label="图表时间范围"></div></div>'+
+    return '<section class="market-trend" aria-label="指标趋势">'+
+      '<div class="mt-header"><div><h3>指标趋势</h3><p class="mt-span"></p></div><div class="mt-ranges" role="group" aria-label="图表时间范围"></div></div>'+
       '<div class="mt-axis-unit"></div><div class="mt-plot-row"><div class="mt-y" aria-hidden="true"></div><div class="mt-plot" tabindex="0" role="slider" aria-label="选择日期查看数值" aria-valuemin="1" aria-orientation="horizontal">'+
       '<svg viewBox="0 0 1000 240" preserveAspectRatio="none" aria-hidden="true"></svg><span class="mt-date" aria-hidden="true"></span>'+
       '</div></div><div class="mt-x" aria-hidden="true"></div><div class="mt-summary"><time></time><small>点选图例可显示或隐藏曲线</small></div>'+
-      '<div class="mt-legend" role="group" aria-label="机构及所选日期数值"></div>'+
-      (!model.detail&&model.series.length>1?'<details class="mt-zoom"><summary>放大查看较小数值</summary><fieldset><legend>选择要放大的曲线</legend><div class="mt-picks"></div></fieldset><div class="mt-zoom-plot"></div></details>':'')+'</section>';
+      '<div class="mt-legend" role="group" aria-label="机构及所选日期数值"></div></section>';
   }
 
   function mountMarketTrend(root, model) {
@@ -85,40 +84,6 @@
       '<button type="button" data-series="'+i+'" style="--mt-series:'+color(i)+'"><i aria-hidden="true"></i>'+
       '<span>'+escape(s.label)+'</span><strong></strong></button>').join('');
     host.querySelector('.mt-axis-unit').textContent=unit;
-    const zoom=host.querySelector('.mt-zoom');
-    let chosen=null;
-    function drawZoom(){
-      if(!zoom?.open)return;
-      const available=series.map((s,j)=>{
-        const values=s.values.slice(first,last+1).filter(Number.isFinite).sort((a,b)=>a-b);
-        return {j,level:values.length?values[Math.floor(values.length/2)]:null};
-      }).filter(s=>s.level!==null).sort((a,b)=>a.level-b.level);
-      let split=1,largest=1;
-      for(let i=1;i<available.length;i++){
-        const ratio=(1+available[i].level)/(1+available[i-1].level);
-        if(ratio>largest){largest=ratio;split=i;}
-      }
-      const selected=chosen||new Set(available.slice(0,split).map(s=>s.j));
-      const availableIds=new Set(available.map(s=>s.j));
-      zoom.querySelector('.mt-picks').innerHTML=series.map((s,j)=>
-        '<label><input type="checkbox" data-zoom="'+j+'"'+(selected.has(j)?' checked':'')+(availableIds.has(j)?'':' disabled')+'><i style="background:'+color(j)+'"></i>'+escape(s.label)+'</label>').join('');
-      const smaller=series.flatMap((s,j)=>selected.has(j)&&availableIds.has(j)?[{label:s.label,color:color(j),values:s.values.slice(first,last+1)}]:[]);
-      const part={dates:dates.slice(first,last+1),series:smaller,unit,customRange:true,detail:true};
-      const box=zoom.querySelector('.mt-zoom-plot');
-      box.innerHTML=smaller.length?marketTrendHTML(part):'<p>请选择至少一条有数据的曲线。</p>';
-      if(smaller.length)mountMarketTrend(box,part);
-    }
-    if(zoom){
-      zoom.ontoggle=drawZoom;
-      zoom.onchange=e=>{
-        if(!e.target.matches('[data-zoom]'))return;
-        chosen=new Set([...zoom.querySelectorAll('[data-zoom]:checked')].map(input=>Number(input.dataset.zoom)));
-        const focused=e.target.dataset.zoom;
-        drawZoom();
-        zoom.querySelector('[data-zoom="'+focused+'"]')?.focus();
-      };
-    }
-
     function focusDate(i) {
       selected = Math.max(first,Math.min(last,i));
       const fraction = x(selected)/10;
@@ -190,7 +155,6 @@
         b.setAttribute('aria-disabled',String(active && visible.size===1));
       }
       focusDate(selected);
-      drawZoom();
     }
 
     function pointer(event){
