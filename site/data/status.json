@@ -3,8 +3,8 @@
   "mode": "hourly-api",
   "dailyThrough": "2026-11-17",
   "monthlyThrough": "2026-10",
-  "lastSuccess": "2026-11-20T09:12:02.696Z",
-  "lastAttempt": "2026-11-20T09:11:49.744Z",
+  "lastSuccess": "2026-11-20T09:35:54.274Z",
+  "lastAttempt": "2026-11-20T09:35:42.297Z",
   "importedAt": "2026-11-20T08:03:15.799Z",
   "message": null,
   "changed": false
