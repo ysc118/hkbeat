@@ -38,3 +38,7 @@
 .feedback-counts{justify-content:center}
 .weekly-compare table{min-width:650px}
 @media(max-width:760px){#controls.app-filters,.index-filter-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}.app-filters .filter-field,.app-filters .date-range label,.index-filter-bar .filter-field,.index-filter-bar .date-range label{min-width:0}.table-pagination{justify-content:center}.page-total{flex-basis:100%;text-align:center}.page-position{font-size:12px}}
+.app-filter-main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;grid-column:1/-1}
+.app-filter-main.has-week{grid-template-columns:repeat(4,minmax(0,1fr))}
+.app-filter-dates{display:flex;align-items:flex-end;gap:12px;width:100%;grid-column:1/-1}
+@media(max-width:760px){.app-filter-main,.app-filter-main.has-week,.app-filter-dates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}

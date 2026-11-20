@@ -98,12 +98,12 @@ document.addEventListener('click',event=>{
   panel.innerHTML=pagedTableBody(model);
   panel.querySelector('[aria-current="page"]')?.focus({preventScroll:true});
 });
-function weeklyComparison(rows,end,labels){
+function weeklyComparison(rows,end,labels,caption='周报对比'){
   if(!end)return '';
   const current=rows[end]||{},prior=rows[dayShift(end,-7)]||{},old=rows[dayShift(end,-21)]||{};
   const delta=(a,b)=>Number.isFinite(a)&&Number.isFinite(b)&&b!==0?((a-b)/b*100).toLocaleString('zh-HK',{maximumFractionDigits:1,signDisplay:'exceptZero'})+'%':'—';
   const sorted=labels.filter(name=>Number.isFinite(current[name])).sort((a,b)=>current[b]-current[a]);
   if(!sorted.length)return '';
-  return '<details class="weekly-compare" open><summary>'+esc(end)+' 周报对比</summary><div class="wrap"><table><thead><tr><th>机构</th><th>本周</th><th>周环比</th><th>四周变化</th><th>排名</th></tr></thead><tbody>'+
+  return '<details class="weekly-compare" open><summary>'+esc(end)+' '+esc(caption)+'</summary><div class="wrap"><table><thead><tr><th>机构</th><th>本周</th><th>周环比</th><th>四周变化</th><th>排名</th></tr></thead><tbody>'+
     sorted.map(name=>'<tr><th>'+esc(name)+'</th><td>'+current[name].toLocaleString('zh-HK')+'</td><td>'+delta(current[name],prior[name])+'</td><td>'+delta(current[name],old[name])+'</td><td>'+String(1+Object.values(current).filter(v=>Number.isFinite(v)&&v>current[name]).length)+'</td></tr>').join('')+'</tbody></table></div></details>';
 }

@@ -114,6 +114,11 @@ function renderNavigation(){
 }
 function update(key,value){
   params.delete('appPage');params.delete('indexPage');
+  if(page==='moonfox'&&['appMetric','appPeriod','weekEnd'].includes(key)){
+    const current=moonSelection();
+    params.set('appMetric',current.metric);params.set('appPeriod',current.period);params.set('weekEnd',String(current.weekEnd));
+    params.delete('metric');
+  }
   if(value)params.set(key,value);else params.delete(key);
   history.replaceState(null,'','#'+page+(params.size?'?'+params:''));
   limit=15;renderNavigation();if(page==='moonfox'||(page==='feed'&&key!=='q'))renderControls();renderResults();
