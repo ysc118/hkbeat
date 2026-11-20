@@ -113,6 +113,7 @@ function renderNavigation(){
   $('en').textContent=({xhs:'XIAOHONGSHU',reports:'WEEKLY ARCHIVE',drafts:'WEEKLY REVIEW',moonfox:'APP PERFORMANCE',feed:'MARKET UPDATES'})[page];
 }
 function update(key,value){
+  params.delete('appPage');params.delete('indexPage');
   if(value)params.set(key,value);else params.delete(key);
   history.replaceState(null,'','#'+page+(params.size?'?'+params:''));
   limit=15;renderNavigation();if(page==='moonfox'||(page==='feed'&&key!=='q'))renderControls();renderResults();
@@ -123,6 +124,7 @@ function select(key,label,options){
   return '<select aria-label="'+esc(label)+'" name="'+key+'"><option value="">'+esc(label)+'</option>'+list.map(([v,l])=>'<option value="'+esc(v)+'"'+(params.get(key)===v?' selected':'')+'>'+esc(l)+'</option>').join('')+'</select>';
 }
 function renderControls(){
+  $('controls').classList.toggle('app-filters',page==='moonfox');
   if(['xhs','reports','drafts'].includes(page)){$('controls').innerHTML='';return;}
   if(page==='moonfox'){loadMoonView();$('controls').innerHTML=moonControls();return;}
   $('controls').innerHTML=marketFeedControls();

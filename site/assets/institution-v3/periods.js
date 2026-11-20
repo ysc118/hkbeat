@@ -25,6 +25,7 @@ function periodDateForm(prefix){
     (from||to?'<button type="button" data-reset-dates>清除日期</button>':'')+'</form>';
 }
 function commitDates(prefix,start,end){
+  params.delete('appPage');params.delete('indexPage');
   for(const [key,value] of [[prefix+'From',start],[prefix+'To',end]]){
     if(value)params.set(key,value);else params.delete(key);
   }
@@ -51,10 +52,52 @@ function periodRows(keys,build,weekOf){
   let last='';
   return keys.map(key=>{
     const week=weekOf(key),first=week!==last;last=week;
-    return '<tr'+(first?' class="week-break"':'')+'><th scope="row">'+esc(key)+(first&&week?'<small class="table-period">'+esc(week)+'</small>':'')+'</th>'+build(key)+'</tr>';
+    const caption=week?week.split(' 至 ').map(part=>'<span>'+esc(part)+'</span>').join(' 至 '):'';
+    return '<tr'+(first?' class="week-break"':'')+'><th scope="row">'+esc(key)+(first&&week?'<small class="table-period">'+caption+'</small>':'')+'</th>'+build(key)+'</tr>';
   }).join('');
 }
 function reportingWeekLabel(day){const end=weekFriday(day);return dayShift(end,-6).slice(5)+' 至 '+end.slice(5);}
+
+const pagedTables=new Map(),tablePageSize=15;
+function tablePageState(total,key){
+  const pages=Math.max(1,Math.ceil(total/tablePageSize));
+  const requested=Number(params.get(key));
+  const current=Math.min(pages,Number.isSafeInteger(requested)&&requested>0?requested:1);
+  return {total,pages,current,start:(current-1)*tablePageSize,end:Math.min(current*tablePageSize,total)};
+}
+function tablePager(state,label){
+  const {total,pages,current,start,end}=state;
+  const button=(target,text,disabled=false)=>'<button type="button" data-table-page="'+target+'"'+(disabled?' disabled':'')+'>'+text+'</button>';
+  const numbers=[...new Set([1,pages,current-1,current,current+1])].filter(n=>n>=1&&n<=pages).sort((a,b)=>a-b);
+  let last=0;
+  const choices=numbers.map(n=>{
+    const gap=last&&n-last>1?'<span class="page-gap" aria-hidden="true">…</span>':'';last=n;
+    return gap+'<button type="button" data-table-page="'+n+'" aria-label="第 '+n+' 页"'+(n===current?' aria-current="page"':'')+'>'+n+'</button>';
+  }).join('');
+  return '<nav class="table-pagination" aria-label="'+esc(label)+'分页"><span class="page-total" role="status">第 '+(total?start+1:0)+'–'+end+' 条 / 共 '+total+' 条</span><div class="page-buttons">'+
+    button(current-1,'上一页',current===1)+choices+button(current+1,'下一页',current===pages)+'</div><span class="page-position">'+current+' / '+pages+' 页</span></nav>';
+}
+function pagedTableBody(model){
+  const state=tablePageState(model.rows.length,model.key);
+  return '<div class="wrap"><table class="equal-columns" aria-label="'+esc(model.label)+'" style="--table-columns:'+model.columns+'"><thead><tr>'+model.headers+'</tr></thead><tbody>'+
+    model.renderRows(model.rows.slice(state.start,state.end))+'</tbody></table></div>'+tablePager(state,model.label);
+}
+function pagedTable(key,label,rows,headers,columns,renderRows){
+  const model={key,label,rows,headers,columns,renderRows};pagedTables.set(key,model);
+  return '<section class="paged-table" data-table-key="'+key+'" aria-label="'+esc(label)+'">'+pagedTableBody(model)+'</section>';
+}
+document.addEventListener('click',event=>{
+  const button=event.target.closest('[data-table-page]'),panel=button?.closest('[data-table-key]');
+  if(!panel||button.disabled)return;
+  const key=panel.dataset.tableKey,model=pagedTables.get(key),requested=Number(button.dataset.tablePage);
+  if(!model||!Number.isSafeInteger(requested))return;
+  const current=Math.max(1,Math.min(Math.ceil(model.rows.length/tablePageSize),requested));
+  if(current===1)params.delete(key);else params.set(key,String(current));
+  history.replaceState(null,'','#'+page+(params.size?'?'+params:''));
+  // Only replace the table so graph ranges and selected series remain unchanged.
+  panel.innerHTML=pagedTableBody(model);
+  panel.querySelector('[aria-current="page"]')?.focus({preventScroll:true});
+});
 function weeklyComparison(rows,end,labels){
   if(!end)return '';
   const current=rows[end]||{},prior=rows[dayShift(end,-7)]||{},old=rows[dayShift(end,-21)]||{};

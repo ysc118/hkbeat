@@ -100,7 +100,7 @@ function moonControls(){
   if(!moonSnapshot)return '';
   const options=Object.entries(moonLabels).map(([k,v])=>'<option value="'+k+'"'+(k===moonMetric()?' selected':'')+'>'+v+'</option>').join('');
   const apps=Object.keys(Object.values(moonSnapshot.dau).at(-1)||{});
-  return '<select aria-label="App 指标" name="metric">'+options+'</select>'+select('app','全部 App',apps)+periodDateForm('appDate');
+  return '<label class="filter-field">指标<select aria-label="App 指标" name="metric">'+options+'</select></label><label class="filter-field">App'+select('app','全部 App',apps)+'</label>'+periodDateForm('appDate');
 }
 let redSnapshot,redPending,redProblem='';
 function loadRedView(){
@@ -136,10 +136,10 @@ function moonView(){
   const fmt=n=>Number.isFinite(n)?n.toLocaleString('zh-HK'):'—';
   const headers=apps.map(a=>'<th scope="col">'+esc(a)+'</th>').join('');
   const report=metric.startsWith('report_'),daily=metric==='daily_new'||metric==='dau';
-  const contents=periodRows(dates.slice(0,limit),date=>apps.map(a=>'<td>'+fmt(rows[date][a])+'</td>').join(''),date=>report?dayShift(date,-6)+' 至 '+date:daily?reportingWeekLabel(date):'');
+  const details=pagedTable('appPage','App 指标明细',dates,'<th scope="col">日期 / 周期</th>'+headers,apps.length+1,
+    selected=>periodRows(selected,date=>apps.map(a=>'<td>'+fmt(rows[date][a])+'</td>').join(''),date=>report?dayShift(date,-6)+' 至 '+date:daily?reportingWeekLabel(date):''));
   $('count').textContent=dates.length+' 个时段';
   const teamURL=location.origin+location.pathname+'#moonfox?team='+encodeURIComponent(moonReader);
   return '<p class="notice">MoonFox iAPP · 日度截至 '+esc(day)+'，月度截至 '+esc(month)+'。周报从周六算至周五，周新增为七天合计，周均 DAU 为七天平均。'+
-    (moonReader==='owner'?'':' <a class="link" href="'+esc(teamURL)+'">团队查看链接</a>')+'</p>'+marketTrendHTML(trend)+(report?weeklyComparison(rows,dates[0],apps):'')+'<div class="wrap"><table><thead><tr><th scope="col">日期 / 周期</th>'+headers+'</tr></thead><tbody>'+contents+'</tbody></table></div>'+
-    (limit<dates.length?'<button id="more" class="more">查看更多</button>':'');
+    (moonReader==='owner'?'':' <a class="link" href="'+esc(teamURL)+'">团队查看链接</a>')+'</p>'+marketTrendHTML(trend)+(report?weeklyComparison(rows,dates[0],apps):'')+details;
 }

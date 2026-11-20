@@ -23,8 +23,8 @@
   function redControls(section) {
     if (!redSnapshot) return '';
     if (section === 'index') {
-      return options('grain','搜索指数粒度',[['daily','日度原值'],['weekly','周平均（周六至周五）']],grain()) +
-        select('brand','全部品牌', redSnapshot.search_index?.brands || []);
+      return '<label class="filter-field">指标粒度'+options('grain','搜索指数粒度',[['daily','日度原值'],['weekly','周平均（周六至周五）']],grain())+'</label>' +
+        '<label class="filter-field">品牌'+select('brand','全部品牌', redSnapshot.search_index?.brands || [])+'</label>';
     }
     const all = weeks(), week = selectedWeek(all);
     if (!all.length) return '';
@@ -74,12 +74,12 @@
       unit:'指数', grain:weekly?'weekly':'daily',customRange:range.some(Boolean)
     };
     const headers = brands.map(b => '<th scope="col">'+esc(b)+'</th>').join('');
-    const recent=periodRows(dates.slice(-rowLimit('index')).reverse(),d=>brands.map(b=>'<td>'+format(rows[d][b])+'</td>').join(''),d=>weekly?dayShift(d,-6)+' 至 '+d:reportingWeekLabel(d));
+    const details=pagedTable('indexPage','小红书搜索指数明细',dates.slice().reverse(),'<th scope="col">'+(weekly?'周截至':'日期')+'</th>'+headers,brands.length+1,
+      selected=>periodRows(selected,d=>brands.map(b=>'<td>'+format(rows[d][b])+'</td>').join(''),d=>weekly?dayShift(d,-6)+' 至 '+d:reportingWeekLabel(d)));
     return '<p class="red-source">小红书搜索指数 · '+esc(dates[0])+' 至 '+esc(dates.at(-1))+
       (weekly?' · 每周六至周五取平均':' · 日度原值')+'</p>'+
       '<div id="red-index-chart">'+window.marketTrendHTML(activeChart)+'</div>'+(weekly?weeklyComparison(rows,dates.at(-1),brands):'')+
-      '<div class="wrap red-index-table"><table aria-label="小红书搜索指数明细"><thead><tr><th scope="col">'+
-      (weekly?'周截至':'日期')+'</th>'+headers+'</tr></thead><tbody>'+recent+'</tbody></table></div>'+pagination(dates.length,'index');
+      details;
   }
   function canonicalNoteId(note) {
     const id = String(note.id || '');
@@ -137,7 +137,7 @@
       return '<section class="red-section" id="red-notes"><div class="red-filters">'+redControls('week')+'</div>'+
         (week?weekBankSummary(week)+'<h3 class="notes-list-title">笔记明细</h3>'+sentimentFilter()+'<div class="red-filters">'+redControls('notes')+'</div>':'')+notesView()+'</section>';
     }
-    return '<section class="red-section"><div class="red-filters">'+redControls('index')+'</div>'+periodDateForm('indexDate')+indexView()+'</section>';
+    return '<section class="red-section"><div class="index-filter-bar">'+redControls('index')+periodDateForm('indexDate')+'</div>'+indexView()+'</section>';
   }
   function redMount() {
     if(xhsSection()==='notes')noteOriginalActions();
