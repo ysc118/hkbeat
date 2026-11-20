@@ -1,10 +1,11 @@
 {
-  "state": "not-configured",
+  "state": "complete",
   "mode": "hourly-api",
   "dailyThrough": "2026-11-17",
   "monthlyThrough": "2026-10",
-  "lastSuccess": null,
-  "lastAttempt": "2026-11-20T08:48:20.477Z",
+  "lastSuccess": "2026-11-20T08:59:50.845Z",
+  "lastAttempt": "2026-11-20T08:59:38.591Z",
   "importedAt": "2026-11-20T08:03:15.799Z",
-  "message": "月狐自动更新密钥尚未配齐，当前显示迁移时的归档数据。"
+  "message": null,
+  "changed": false
 }
