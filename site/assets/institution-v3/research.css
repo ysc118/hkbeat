@@ -1,0 +1,49 @@
+:root{--za-green:#32cb9d;--za-yellow:#fcde35;--ink:#292d4d;--pine:#0c4d3d;--line:#d9e6e0;--mist:#ecfaf5;--paper:#f7faf8}
+body{color:var(--ink);background:var(--paper);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif}
+header{background:var(--za-green);color:var(--ink)}
+.bar{height:48px;border-color:#176b5436}.brand{color:var(--ink)}.desk,.right{color:#214c43}.right b{border-color:#13785e50}.logo i{background:var(--pine)}.logo i:last-child{background:var(--za-yellow)}
+.mast{padding-top:23px;padding-bottom:24px}.mast h1{color:var(--ink);font-weight:730;font-size:clamp(35px,4.5vw,55px);letter-spacing:-.045em}.mast .eyebrow{color:#155343}.mast #scope{color:#174b40}
+header nav{gap:2px;background:transparent}header nav a{color:#173e36;border-bottom-color:transparent;font-weight:600}header nav a.active{background:var(--pine);color:#fff;border-color:var(--za-yellow);border-radius:6px 6px 0 0}header nav a:not(.active):hover{background:#ffffff3d}
+main{padding-top:0}.subnav{display:flex;gap:20px;overflow-x:auto;padding:14px 0;margin-bottom:20px;border-bottom:1px solid var(--line)}.subnav a{font-size:13px;color:#596960;white-space:nowrap;text-decoration:none}.subnav .current{font-weight:700;color:var(--pine);text-decoration:underline;text-underline-offset:5px;text-decoration-color:#179d76;text-decoration-thickness:2px}
+.heading{margin-bottom:14px}.heading .eyebrow{color:#137557;letter-spacing:.14em}.heading h2{color:var(--ink)}.tag.official,.tabbar button[aria-pressed=true],.handoff{border-color:#c5e6d7}.tag.official{color:#0a5841;background:var(--mist)}.tag.news,.choice-outcome{color:#655215;background:#fff4b2}.notice{border-left-color:var(--za-green);color:#4b6058}
+.order-box{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;background:var(--mist);border:1px solid #bedfd2;border-radius:12px;margin:14px 0}.order-box h3{font-size:24px;margin:3px 0}.order-box p{margin:0;font-size:13px}.order-box .eyebrow{color:#0e6850;font-size:10px}.order-box form{display:flex;align-items:end;gap:8px}.order-box label{font-size:12px;font-weight:600;color:#40584a}.order-box input{display:block;width:155px;margin-top:5px;font-variant-numeric:tabular-nums}.order-box button{border:0;border-radius:6px;color:white;background:var(--pine);padding:9px 14px}
+.scenario-matrix,.matrix-scroll{background:white;border:1px solid var(--line);border-radius:10px;overflow:auto}.scenario-matrix table{min-width:900px;table-layout:fixed;width:100%}.scenario-matrix th,.scenario-matrix td{white-space:normal;font-size:13px;line-height:1.65;padding:12px 14px;vertical-align:top;text-align:left;border-bottom:1px solid #e2eae5}.scenario-matrix thead th{background:#104d3b;color:white}.scenario-matrix thead th.chosen{box-shadow:inset 0 4px var(--za-yellow)}.scenario-matrix th:first-child{width:125px;position:sticky;left:0;z-index:1;background:#f1f6f3;color:#294c3f}.scenario-matrix thead th:first-child{background:#104d3b;color:white}.scenario-matrix thead small,.scenario-matrix thead strong{display:block}.scenario-matrix thead small{color:#b7d9c8;font-size:10px}.scenario-matrix thead strong{font-size:17px}.scenario-matrix .fee-row td,.scenario-matrix .fee-row th{background:#fff7c5}.fee-price{font:650 20px/1.3 "IBM Plex Mono",monospace;color:#34472c}.source-chip{display:block;color:#126449;font-size:12px;margin:5px 0;overflow-wrap:anywhere}.matrix-scroll{margin:12px 0}.aud-matrix td{text-align:center;padding:7px}.aud-matrix th{text-align:center;background:#ecf7f0}.aud-matrix th:first-child{text-align:left}.aud-matrix button{border:0;border-radius:5px;min-width:38px;padding:6px 12px;background:#cef4df;color:#10553f;font-weight:700}.aud-matrix button.sel{background:var(--za-yellow);color:var(--ink)}.matrix-list-head{display:flex;align-items:center;justify-content:space-between;margin:20px 0 8px}.matrix-list-head .more{margin:0}
+@media(max-width:680px){.mast{padding-top:16px;padding-bottom:16px}.subnav{margin-bottom:16px}.order-box{align-items:start;flex-direction:column;padding:14px}header nav a{padding:10px 11px}.scenario-matrix th:first-child{width:95px}.scenario-matrix table{min-width:860px}}
+
+/* Source material and planning work have separate, explicitly named entrances. */
+#nav{display:flex;align-items:center;gap:0;overflow:visible;padding-bottom:12px}
+#nav .category-tab{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;line-height:1.4;border:1px solid transparent;border-radius:6px;font-weight:650;color:#163d34}
+#nav .category-tab+.category-tab{margin-left:24px;position:relative}
+#nav .category-tab+.category-tab::before{content:'';position:absolute;left:-13px;top:5px;bottom:5px;width:1px;background:#1c6a55}
+#nav .category-tab .category-dot{width:9px;height:9px;border-radius:2px;background:#075b45}
+#nav .analysis .category-dot{background:#fcde35;border:1px solid #817016}
+#nav .facts.is-selected{background:#104f3e;color:white}
+#nav .facts.is-selected .category-dot{background:#61e4b1}
+#nav .analysis.is-selected{background:#fcde35;border-color:#998715;color:#2d321a}
+#nav .analysis.is-selected .category-dot{background:#61520d}
+#nav .category-tab:focus-visible,.subnav a:focus-visible,.upload-entry:focus-visible{outline:2px solid #292d4d;outline-offset:2px}
+.subnav{gap:clamp(12px,2vw,24px);flex-wrap:wrap;overflow:visible}
+.subnav .current{text-decoration:none;border-radius:3px;padding:0 4px;background:#d2f5e7;box-shadow:0 2px #168565}
+.subnav[data-kind=analysis] .current{background:#fff1a1;box-shadow:0 2px #ac8b0d;color:#373520}
+.subnav[hidden]{display:none}.subnav[hidden]+.heading{margin-top:24px}
+.upload-entry{color:#164e3c;font-size:13px;text-decoration:none;font-weight:600;padding:4px 9px;border:1px solid #267b60;border-radius:5px;white-space:nowrap}
+.upload-entry:hover,.upload-entry.is-selected{color:white;background:#104f3e}
+@media(max-width:500px){#nav .category-tab{font-size:13px;padding:8px 11px}.subnav{column-gap:14px;row-gap:10px}}
+#nav .directory-tab{margin-left:auto;color:#174a3b;text-decoration:underline;text-underline-offset:4px;font-size:13px;font-weight:650}
+#nav .directory-tab[aria-current]{background:#114c3b;color:white;border-radius:5px}
+.institution-directory{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:10px}
+.directory-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:12px;background:white;border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none}
+.directory-item:hover,.directory-item:focus-visible{border-color:#168565}.directory-item small,.directory-item strong{display:block}.directory-item small,.directory-meta{color:#52685b;font-size:12px}.directory-item strong{font-size:17px}
+.profile-title{display:flex;align-items:center;gap:10px;margin:16px 0}.profile-title h3{font-size:24px;margin:0}
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.profile-grid section{background:white;border:1px solid var(--line);border-radius:9px;overflow:hidden;padding:0 18px 16px}.profile-grid h4{margin:0 -18px 12px;padding:11px 18px;font-size:16px}.profile-facts h4{background:#d2f5e7;color:#104f3e}.profile-analysis h4{background:#fff1a1;color:#44380e}
+.profile-links{display:grid}.station-link{color:var(--pine);padding:8px 0;text-decoration:underline;text-underline-offset:4px}.profile-grid details{margin-top:14px}.profile-grid summary{cursor:pointer;font-size:13px}.profile-grid .source-links{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:8px}
+@media(max-width:680px){.profile-grid{grid-template-columns:1fr}#nav .directory-tab{padding:8px 4px;white-space:nowrap;font-size:12px}}
+
+#nav .category-tab.is-selected{background:var(--pine);color:#fff}
+#coverage{border-left:3px solid #36b588;padding:2px 0 2px 14px;margin:0 0 22px}
+#coverage h3{font-size:13px;color:var(--pine);margin:0 0 4px}
+#coverage dl{margin:0}
+#coverage dl div{display:grid;grid-template-columns:8em minmax(0,1fr);gap:8px;line-height:1.7;font-size:13px}
+#coverage dt{font-weight:600;color:#40594d}
+#coverage dd{margin:0;color:#47574f;overflow-wrap:anywhere}
+@media(max-width:520px){#nav .category-tab+.category-tab{margin-left:10px}#nav .category-tab+.category-tab::before{left:-6px}#coverage dl div{grid-template-columns:6.5em minmax(0,1fr)}}

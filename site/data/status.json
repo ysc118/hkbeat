@@ -1,0 +1,10 @@
+{
+  "state": "not-configured",
+  "mode": "hourly-api",
+  "dailyThrough": "2026-11-17",
+  "monthlyThrough": "2026-10",
+  "lastSuccess": null,
+  "lastAttempt": null,
+  "importedAt": "2026-11-20T08:03:15.799Z",
+  "message": "当前为迁移归档数据，月狐后台密钥配置完成后启用自动同步。"
+}
