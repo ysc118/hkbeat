@@ -1,0 +1,58 @@
+name: Update MoonFox and publish website
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: hkbeat-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify data handling
+        run: npm test
+      - name: Fetch MoonFox directly
+        id: sync
+        continue-on-error: true
+        env:
+          TEAM_ACCESS_KEY: ${{ secrets.TEAM_ACCESS_KEY }}
+          MOONFOX_DEV_KEY: ${{ secrets.MOONFOX_DEV_KEY }}
+          MOONFOX_DEV_SECRET: ${{ secrets.MOONFOX_DEV_SECRET }}
+        run: npm run sync
+      - name: Preserve encrypted history and update status
+        run: |
+          git add site/data/app.enc site/data/status.json
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Update encrypted MoonFox observations and sync status'
+            git push
+          fi
+      - name: Build complete website
+        run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Report unsuccessful API check
+        if: steps.sync.outcome == 'failure'
+        run: |
+          echo 'Website published with preserved data; MoonFox API sync needs attention.'
+          exit 1
